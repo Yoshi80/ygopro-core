@@ -132,6 +132,12 @@ void card::get_infos(uint32_t query_flag) {
 	CHECK_AND_INSERT(QUERY_BASE_DEFENSE, get_base_defense());
 	CHECK_AND_INSERT(QUERY_REASON, current.reason);
 	CHECK_AND_INSERT(QUERY_COVER, cover);
+	uint32_t query_status = status;
+	if(single_effect.count(FLAG_MAXIMUM_CENTER | 0x10000000))
+		query_status |= STATUS_MAXIMUM_CENTER;
+	if(single_effect.count(FLAG_MAXIMUM_SIDE | 0x10000000))
+		query_status |= STATUS_MAXIMUM_SIDE;
+
 	if(query_flag & QUERY_REASON_CARD) {
 		insert_value<uint16_t>(pduel->query_buffer, sizeof(uint32_t) + sizeof(uint16_t) + sizeof(uint64_t));
 		insert_value<uint32_t>(pduel->query_buffer, QUERY_REASON_CARD);
@@ -187,7 +193,7 @@ void card::get_infos(uint32_t query_flag) {
 			insert_value<uint32_t>(pduel->query_buffer, cmit.first + ((cmit.second[0] + cmit.second[1]) << 16));
 	}
 	CHECK_AND_INSERT_T(QUERY_OWNER, owner, uint8_t);
-	CHECK_AND_INSERT(QUERY_STATUS, status);
+	CHECK_AND_INSERT(QUERY_STATUS, query_status);
 	CHECK_AND_INSERT_T(QUERY_IS_PUBLIC, (is_position(POS_FACEUP) || is_related_to_chains() || (current.location == LOCATION_HAND && is_affected_by_effect(EFFECT_PUBLIC))) ? 1 : 0, uint8_t);
 	CHECK_AND_INSERT(QUERY_LSCALE, get_lscale());
 	CHECK_AND_INSERT(QUERY_RSCALE, get_rscale());
