@@ -4005,3 +4005,23 @@ bool card::recreate(uint32_t code) {
 	data = pduel->read_card(code);
 	return true;
 }
+
+int32_t card::is_maximum_summonable(uint8_t playerid) {
+	if(!(data.type & TYPE_MONSTER))
+		return FALSE;
+	effect_set eset;
+	filter_spsummon_procedure(playerid, &eset, 0);
+	filter_spsummon_procedure_g(playerid, &eset);
+	int32_t max_count = 0;
+	int32_t non_max_count = 0;
+	for(const auto& peff : eset) {
+		std::vector<lua_Integer> retval;
+		peff->get_value(this, 0, retval);
+		uint32_t sumtype = retval.size() > 0 ? static_cast<uint32_t>(retval[0]) : 0;
+		if((sumtype & SUMMON_TYPE_MAXIMUM) == SUMMON_TYPE_MAXIMUM)
+			max_count++;
+		else
+			non_max_count++;
+	}
+	return (max_count > 0 && non_max_count == 0);
+}
