@@ -135,8 +135,6 @@ void card::get_infos(uint32_t query_flag) {
 	uint32_t query_status = status;
 	if(single_effect.count(FLAG_MAXIMUM_CENTER | 0x10000000))
 		query_status |= STATUS_MAXIMUM_CENTER;
-	if(single_effect.count(FLAG_MAXIMUM_SIDE | 0x10000000))
-		query_status |= STATUS_MAXIMUM_SIDE;
 
 	if(query_flag & QUERY_REASON_CARD) {
 		insert_value<uint16_t>(pduel->query_buffer, sizeof(uint32_t) + sizeof(uint16_t) + sizeof(uint64_t));
